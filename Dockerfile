@@ -1,4 +1,4 @@
-# ---------- Stage 1 : Build WAR ----------
+# -------- Stage 1 : Build --------
 FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
@@ -10,7 +10,8 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests
 
-# ---------- Stage 2 : Run on Tomcat ----------
+
+# -------- Stage 2 : Runtime --------
 FROM tomcat:9-jdk17-temurin
 
 RUN rm -rf /usr/local/tomcat/webapps/*
