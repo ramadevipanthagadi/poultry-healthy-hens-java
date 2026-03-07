@@ -1,56 +1,52 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'mymave'
+    }
+
     environment {
-        IMAGE_NAME = "subhashrokkala/healthy-hens"
-        TAG = "latest"
-        CONTAINER_NAME = "healthy-hens"
+        DOCKER_USER = 'sunithriyansh'
+        DOCKER_PASS = 'Sunitha@565'
+        IMAGE_NAME  = 'satya'
     }
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main',
-                credentialsId: 'gitloginCred',
-                url: 'https://github.com/Subhash-Rokkala/poultry-healthy-hens-java.git'
+                git branch: 'master', url: 'https://github.com/ramadevipanthagadi/hotstar_project.git'
+            }
+        }
+
+        stage('Build with Maven') {
+            steps {
+                sh 'mvn clean package'
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh "docker build -t $IMAGE_NAME:$TAG ."
+                sh 'docker build -t bindu .'
             }
         }
 
-        stage('Docker Login') {
+        stage('Docker Run') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-
-                sh '''
-                echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                '''
-                }
+                sh 'docker rm -f cont1 || true'
+                sh 'docker run -d --name cont1 -p 8088:8080 bindu'
             }
         }
 
-        stage('Push Image') {
+        stage('Push to DockerHub') {
             steps {
-                sh "docker push $IMAGE_NAME:$TAG"
+                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                sh 'docker tag imag1:latest $DOCKER_USER/$IMAGE_NAME:latest'
+                sh 'docker push $DOCKER_USER/$IMAGE_NAME:latest'
             }
         }
 
-        stage('Run Container') {
-            steps {
-                sh '''
-                docker rm -f healthy-hens || true
-                docker run -d -p 2000:8080 --name healthy-hens subhashrokkala/healthy-hens:latest
-                '''
-            }
-        }
     }
 }
+
+        
