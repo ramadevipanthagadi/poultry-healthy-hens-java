@@ -1,5 +1,22 @@
-FROM tomcat:9
+# ---------- Stage 1 : Build WAR ----------
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
-COPY target/healthy-hens-1.0.war /usr/local/tomcat/webapps/healthy-hens.war
+WORKDIR /app
 
-EXPOSE 8000
+COPY pom.xml .
+RUN mvn -B -q -e -DskipTests dependency:go-offline
+
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+# ---------- Stage 2 : Run on Tomcat ----------
+FROM tomcat:9-jdk17-temurin
+
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+COPY --from=builder /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+
+CMD ["catalina.sh","run"]
