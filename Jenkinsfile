@@ -15,7 +15,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/ramadevipanthagadi/hotstar_project.git'
+                git branch: 'main', url: 'https://github.com/ramadevipanthagadi/poultry-healthy-hens-java.git'
             }
         }
 
