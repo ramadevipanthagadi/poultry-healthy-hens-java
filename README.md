@@ -1,1 +1,1 @@
-# poultry-healthy-hens-java project
+# poultry-healthy-hens-java
