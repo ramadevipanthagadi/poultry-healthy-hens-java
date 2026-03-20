@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKER_USER = 'sunithriyansh'
         DOCKER_PASS = 'Sunitha@565'
-        IMAGE_NAME  = 'satya'
+        IMAGE_NAME  = 'bindu'
     }
 
     stages {
